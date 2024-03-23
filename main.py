@@ -33,8 +33,55 @@ def lua_to_python(lua_table):
     else:
         return lua_table
 
+def sort_by_field(data: list|tuple|dict, field:str):
+    """sort items by field
+    
+    Sort items by field value (default: ASC) and rewrite indexes
+
+    Args:
+        data (list | tuple | dict): collection to be ordered
+
+    Returns:
+        list | tuple | dict: ordered items
+    """
+    
+    sorted_items = sorted(data.items(), key=lambda x: x[1][field])
+    sorted_data = {index + 1: item[1] for index, item in enumerate(sorted_items)}
+
+    return sorted_data
+
+def sort_groups_by_name(data):
+    """_summary_
+
+    Args:
+        data (_type_): _description_
+    """
+
+def sort_mission(mission):
+    """Sort mission data
+    
+    Sort all mission sortable data by name
+
+    Args:
+        mission (_type_): _description_
+    """
+    
+    # on each coalition
+    for coalition in ("blue", "red", "neutral"):
+        if coalition in mission["coalition"]:
+            mission["coalition"][coalition]["country"] = sort_by_field(mission["coalition"][coalition]["country"], "name")
+            
+            # on each coalition's country
+            for country_key,country in mission["coalition"][coalition]["country"].items():
+
+                # on each asset category in a coalition's country
+                for category in ("helicopter", "plane", "ship", "static", "vehicle"):
+                    if category in country:
+                         country[category]["group"] = sort_by_field(country[category]["group"], "name")
+                
+
 @calculate_execution_time
-def convert_file_lua_to_yaml(lua_file_path:str, yaml_file_path:str):
+def convert_mission_lua_to_yaml(lua_file_path:str, yaml_file_path:str):
     """Convert a LUA file (array) to Yaml
 
     Args:
@@ -50,8 +97,9 @@ def convert_file_lua_to_yaml(lua_file_path:str, yaml_file_path:str):
             lua.execute(lua_code)
             lua_dict = lua.globals().mission
             
-            data = lua_to_python(lua_dict)
-            yaml.dump(data, yaml_file, sort_keys=True)
+            mission = lua_to_python(lua_dict)
+            sort_mission(mission)
+            yaml.dump(mission, yaml_file, sort_keys=True)
             print("done")
         
 
@@ -61,4 +109,4 @@ if __name__ == "__main__":
     parser.add_argument('mission_yaml', type=str, help='Path to the destination mission file (yaml)')
     args = parser.parse_args()
     
-    convert_file_lua_to_yaml(args.mission_lua, args.mission_yaml)
+    convert_mission_lua_to_yaml(args.mission_lua, args.mission_yaml)
