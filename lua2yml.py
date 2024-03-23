@@ -1,23 +1,17 @@
-import sys
-import ast
 from lupa import LuaRuntime
-from collections import OrderedDict
+from app.timer import timer
 import yaml
 import argparse
-import time
-
-def calculate_execution_time(func):
-    def wrapper(*args, **kwargs):
-        start_time = time.time()
-        result = func(*args, **kwargs)
-        end_time = time.time()
-        execution_time = end_time - start_time
-        print(f"exec of {func.__name__} in {execution_time:.2f} seconds")
-        return result
-    return wrapper
-    
 
 def lua_to_python(lua_table):
+    """Convert Lua Table to Python objects
+
+    Args:
+        lua_table (LuaTable):
+
+    Returns:
+        list|dict|tuple:
+    """
     if isinstance(lua_table, list):
         return [lua_to_python(v) for v in lua_table]
     elif isinstance(lua_table, str):
@@ -28,10 +22,8 @@ def lua_to_python(lua_table):
         return lua_table
     elif isinstance(lua_table, bool):
         return lua_table
-    elif isinstance(lua_table, dict) or True:
-        return {k: lua_to_python(v) for k, v in lua_table.items()}
     else:
-        return lua_table
+        return {k: lua_to_python(v) for k, v in lua_table.items()}
 
 def sort_by_field(data: list|tuple|dict, field:str):
     """sort items by field
@@ -80,7 +72,7 @@ def sort_mission(mission):
                          country[category]["group"] = sort_by_field(country[category]["group"], "name")
                 
 
-@calculate_execution_time
+@timer
 def convert_mission_lua_to_yaml(lua_file_path:str, yaml_file_path:str):
     """Convert a LUA file (array) to Yaml
 

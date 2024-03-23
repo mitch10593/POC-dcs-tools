@@ -1,5 +1,5 @@
 import pytest
-from main import sort_by_field
+from lua2yml import sort_by_field
 
 def test_sort_by_field():
     # Sample input data

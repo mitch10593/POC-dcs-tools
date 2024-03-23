@@ -1,4 +1,4 @@
-# mission tools
+# Mission Tools
 
 POC of DCS mission tools.
 
@@ -12,26 +12,45 @@ Ordered collections:
 - ship (by name)
 - vehicle (by name)
 
+## Usage
+
+### Convert a DCS Lua Mission to YAML
+
+```shell
+python lua2yml.py src/mission/mission src/mission/mission.yml
+```
+
+### Convert a YAML Mission to DCS Lua
+
+```shell
+python yml2lua.py src/mission/mission.yml src/mission/mission
+```
+
 ## work on this project
+
+### virtual environment
+
+**Linux**:
 
 ```shell
 python3 -m venv .venv
 source .venv/bin/activate
+```
 
+**Windows**:
+
+```shell
+@todo
+```
+
+### install requirements
+
+```shell
 pip install -r requirements.txt
 ```
 
-launch tests:
+### launch tests
 
 ```shell
 pytest
 ```
-
-
-
-coalition / blue / country / <id> / name
-coalition / blue / country / <id> / helicopter / group / <id> / name
-coalition / blue / country / <id> / plane / group / <id> / name
-coalition / blue / country / <id> / ship / group / <id> / name
-coalition / blue / country / <id> / static / group / <id> / name
-coalition / blue / country / <id> / vehicle / group / <id> / name
